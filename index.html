@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookScout</title>
+    <link rel="stylesheet" href="BookScout.css">
+    <script>
+        function redirectToHomepage(event) {
+            event.preventDefault(); // Prevent the form from submitting the traditional way
+            // You can add validation logic here if needed
+            window.location.href = "BookScout_Home.html"; 
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <div class="titleborder">
+            <h1 class="title">BookScout</h1>
+        </div>
+    </header>
+    <main>
+        <form class="login-form" onsubmit="redirectToHomepage(event)">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            
+            <button type="submit">Login</button>
+        </form>
+    </main>
+</body>
+</html>
