@@ -115,6 +115,11 @@
         background-color: #ae5454; 
         padding: 10px; 
         text-align: center; 
+        width: 100%; 
+        position: fixed; 
+        top: 0; 
+        left: 0;
+        z-index: 1000; /
     }
     nav a {
         color: white; 
