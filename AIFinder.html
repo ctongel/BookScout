@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookScout - AI Textbook Finder</title>
+    <link rel="stylesheet" href="BookScout.css">
+    <style>
+        .titleborder {
+            text-align: center; /* Center the title */
+            margin-bottom: 20px; /* Add space below the title */
+        }
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px auto;
+            max-width: 600px; /* Set a maximum width for the chat box */
+        }
+        .chat-box {
+            width: 100%;
+            height: 400px; /* Set a fixed height for the chat box */
+            border: 1px solid #ccc;
+            overflow-y: auto; /* Enable vertical scrolling */
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        .user-input {
+            display: flex;
+            margin-top: 10px;
+        }
+        input[type="text"] {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px;
+            margin-left: 5px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="BookScout_Home.html">Home</a> 
+        <a href="ShoppingCart.html">Shopping Cart</a> 
+    </nav>
+    <div class="titleborder">
+        <h1 class="Hometitle">BookScout</h1>
+    </div>
+
+    <div class="chat-container">
+        <div class="chat-box" id="chatBox"></div>
+        <div class="user-input">
+            <input type="text" id="userMessage" placeholder="Ask for a textbook...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        let shoppingCart = JSON.parse(localStorage.getItem('cart')) || [];  // Retrieve cart from localStorage
+
+        async function sendMessage() {
+            const userInput = document.getElementById('userMessage');
+            const chatBox = document.getElementById('chatBox');
+            const messageText = userInput.value.trim();
+
+            if (messageText === '') {
+                return;
+            }
+
+            // Display user message
+            chatBox.innerHTML += `<div class="message user-message">${messageText}</div>`;
+            userInput.value = '';  // Clear input
+
+            // Simulate bot response after a delay
+            chatBox.innerHTML += `<div class="message bot-message">...</div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;  // Scroll to the bottom
+
+            // Normalize the input for easier checking
+            const normalizedInput = messageText.toLowerCase();
+
+            // Check if user is asking for the cheapest option
+            if (normalizedInput.includes('cheapest')) {
+                const bookName = normalizedInput.replace('cheapest', '').trim();
+                await fetchCheapestBook(bookName);
+            } 
+            // Check if user is asking to find a specific book
+            else if (normalizedInput.startsWith('find')) {
+                const bookName = normalizedInput.replace('find', '').trim();
+                await fetchCheapestBook(bookName);
+            } 
+            // Handle cases where only the book name is provided
+            else {
+                await fetchCheapestBook(messageText);
+            }
+        }
+
+        async function fetchCheapestBook(bookName) {
+            const apiKey = 'AIzaSyDlPp35Lj2_g-BaXEMJsRHwBT64TnJW6Sc'; // API Key for Google Books API
+            const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(bookName)}&key=${apiKey}`);
+            const data = await response.json();
+
+            if (data.items && data.items.length > 0) {
+                // Find the cheapest book by price
+                let cheapestBook = null;
+                let lowestPrice = Infinity;
+
+                for (const item of data.items) {
+                    const saleInfo = item.saleInfo;
+                    const price = saleInfo.listPrice ? saleInfo.listPrice.amount : null;
+
+                    if (price !== null && price < lowestPrice) {
+                        lowestPrice = price;
+                        cheapestBook = item;
+                    }
+                }
+
+                if (cheapestBook) {
+                    const title = cheapestBook.volumeInfo.title || 'No Title Available';
+                    const author = cheapestBook.volumeInfo.authors ? cheapestBook.volumeInfo.authors.join(', ') : 'Unknown Author';
+                    const cover = cheapestBook.volumeInfo.imageLinks ? cheapestBook.volumeInfo.imageLinks.thumbnail : 'https://via.placeholder.com/150';
+                    const link = cheapestBook.volumeInfo.infoLink;
+
+                    const responseMessage = `
+                        <div class="message bot-message">
+                            The cheapest option for "${bookName}" is "${title}" by ${author}. 
+                            Price: $${lowestPrice}. 
+                            <a href="${link}" target="_blank">View Details</a>
+                            <button class="add-to-cart" onclick="addToCart('${title}', ${lowestPrice}, '${link}')">Add to Cart</button>
+                        </div>
+                    `;
+                    document.getElementById('chatBox').innerHTML += responseMessage;
+                } else {
+                    document.getElementById('chatBox').innerHTML += `<div class="message bot-message">I couldn't find any prices for "${bookName}".</div>`;
+                }
+            } else {
+                document.getElementById('chatBox').innerHTML += `<div class="message bot-message">No results found for "${bookName}".</div>`;
+            }
+            document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight; // Scroll to the bottom
+        }
+
+        function addToCart(title, price, link) {
+            console.log("Attempting to add to cart:", { title, price, link }); // Debugging message
+            shoppingCart.push({ title, price, link });
+            localStorage.setItem('cart', JSON.stringify(shoppingCart)); // Save cart to localStorage
+            alert(`${title} has been added to your cart!`);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <link rel="stylesheet" href="BookScout.css">
+
+</head>
+<body>
+    <div class="titleborder">
+        <h1 class="Hometitle">BookScout</h1>
+    </div>
+    <nav>
+        <a href="BookScout_Home.html">Home</a> 
+        <a href="ShoppingCart.html">Shopping Cart</a> 
+    </nav>
+    <h1>Your Shopping Cart</h1>
+    <div id="cartItems"></div>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const cartContainer = document.getElementById('cartItems');
+                const cart = JSON.parse(localStorage.getItem('cart')) || []; // Retrieve from localStorage
+    
+                if (cart.length > 0) {
+                    cart.forEach((item, index) => {
+                        const cartItem = `
+                            <div class="cart-item">
+                                <img src="${item.cover}" alt="${item.title}">
+                                <h4>${item.title}</h4>
+                                <a href="${item.link}" target="_blank">View Details</a>
+                                <button onclick="removeFromCart(${index})">Remove</button> <!-- Remove button -->
+                            </div>
+                        `;
+                        cartContainer.innerHTML += cartItem;
+                    });
+                } else {
+                    cartContainer.innerHTML = `<h4>Your cart is empty.</h4>`;
+                }
+            });
+    
+            function removeFromCart(index) {
+                const cart = JSON.parse(localStorage.getItem('cart')) || [];
+                cart.splice(index, 1); // Remove item at the specified index
+                localStorage.setItem('cart', JSON.stringify(cart)); // Update localStorage
+                location.reload(); // Reload the page to update the displayed cart items
+            }
+        </script>
+    </body>
+    </html>
+    

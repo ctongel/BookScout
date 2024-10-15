@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookScout - Nearby Bookstores</title>
+    <link rel="stylesheet" href="BookScout.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map {
+        height: 50vh; /* Adjust this value as needed */
+        width: 100%;
+        }
+        .form-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<nav>
+    <a href="BookScout_Home.html">Home</a> 
+    <a href="ShoppingCart.html">Shopping Cart</a> 
+</nav>
+<div class="titleborder">
+    <h1 class="Hometitle">BookScout</h1>
+</div>
+    <h3 style="color:white;"> Geo-location</h3>
+    <h4 style="color:white;">Find Textbooks Near You</h4>
+<body>
+    <div class="form-container">
+        <input type="text" id="city" placeholder="Enter City" required>
+        <input type="text" id="state" placeholder="Enter State (e.g., CA)" required>
+        <input type="number" id="radius" placeholder="Radius in miles" required>
+        <button onclick="findBookstores()">Find Bookstores</button>
+    </div>
+    
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        const map = L.map('map').setView([40.7128, -74.0060], 12); // Default to New York
+
+        // Set up the OpenStreetMap layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+        }).addTo(map);
+
+        function findBookstores() {
+            const city = document.getElementById('city').value;
+            const state = document.getElementById('state').value;
+            const radius = document.getElementById('radius').value * 1609.34; // Convert miles to meters
+
+            // Geocode the city and state to get latitude and longitude using LocationIQ
+            const locationQuery = `${city}, ${state}`;
+            fetch(`https://us1.locationiq.com/v1/search.php?key=pk.72c273e33d68e2ca3d0de08cb96dce55&q=${encodeURIComponent(locationQuery)}&format=json`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        const location = data[0];
+                        const lat = location.lat;
+                        const lng = location.lon;
+
+                        // Clear previous markers
+                        map.eachLayer(function (layer) {
+                            if (layer instanceof L.Marker) {
+                                map.removeLayer(layer);
+                            }
+                        });
+
+                        // Set map view to the new location
+                        map.setView([lat, lng], 12);
+
+                        // Circle to indicate search radius
+                        L.circle([lat, lng], { radius: radius, color: 'blue', fillOpacity: 0.2 }).addTo(map);
+
+                        // Overpass API query to find nearby bookstores
+                        const query = `
+                            [out:json];
+                            (
+                                node["shop"="books"](around:${radius}, ${lat}, ${lng});
+                                way["shop"="books"](around:${radius}, ${lat}, ${lng});
+                                relation["shop"="books"](around:${radius}, ${lat}, ${lng});
+                            );
+                            out body;
+                        `;
+
+                        fetch(`https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`)
+                            .then(response => response.json())
+                            .then(bookstores => {
+                                bookstores.elements.forEach(store => {
+                                    const storeLat = store.lat || (store.center && store.center.lat);
+                                    const storeLng = store.lon || (store.center && store.center.lon);
+                                    if (storeLat && storeLng) {
+                                        const marker = L.marker([storeLat, storeLng]).addTo(map);
+                                        const storeName = store.tags ? store.tags.name : "Unnamed Bookstore";
+                                        marker.bindPopup(storeName);
+                                    }
+                                });
+                            })
+                            .catch(error => {
+                                console.error('Error fetching bookstore data:', error);
+                                alert('Error fetching bookstore data.');
+                            });
+                    } else {
+                        alert('Could not find the location for "' + city + ', ' + state + '".');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching location data:', error);
+                    alert('Error fetching location data.');
+                });
+        }
+    </script>
+</body>
+</html>

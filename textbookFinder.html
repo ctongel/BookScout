@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookScout - Search Textbooks</title>
+    <link rel="stylesheet" href="BookScout.css">
+
+</head>
+<body>
+    <nav>
+        <a href="BookScout_Home.html">Home</a> 
+        <a href="ShoppingCart.html">Shopping Cart</a> 
+    </nav>
+    <div class="titleborder">
+        <h1 class="Hometitle">BookScout</h1>
+    </div>
+
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Enter textbook name">
+        <button onclick="searchTextbooks()">Search</button>
+    </div>
+
+    <div id="results"></div>
+
+    <script>
+        // Function to get the cart from localStorage
+        function getCart() {
+            const cart = localStorage.getItem('cart');
+            return cart ? JSON.parse(cart) : [];
+        }
+
+        // Function to add items to the cart
+        function addToCart(title, cover, link) {
+            const cart = getCart(); // Retrieve the existing cart
+            const item = { title, cover, link };
+            cart.push(item); // Add the new item to the cart
+            
+            // Save the updated cart back to localStorage
+            localStorage.setItem('cart', JSON.stringify(cart));
+            
+            alert(`${title} has been added to your cart!`);
+        }
+
+        function searchTextbooks() {
+            const searchInput = document.getElementById('searchInput').value.trim();
+            const resultContainer = document.getElementById('results');
+            resultContainer.innerHTML = '';  // Clear previous results
+
+            // Check if input is not empty
+            if (searchInput === '') {
+                resultContainer.innerHTML = `<h4>Please enter a textbook name.</h4>`;
+                return;
+            }
+
+            // Fetching from Google Books API
+            const apiKey = 'AIzaSyDlPp35Lj2_g-BaXEMJsRHwBT64TnJW6Sc';
+            fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(searchInput)}&key=${apiKey}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.items && data.items.length > 0) {
+                        data.items.forEach(book => {
+                            const title = book.volumeInfo.title || 'No Title Available';
+                            const author = book.volumeInfo.authors ? book.volumeInfo.authors.join(', ') : 'Unknown Author';
+                            const cover = book.volumeInfo.imageLinks ? book.volumeInfo.imageLinks.thumbnail : 'https://via.placeholder.com/150';
+                            const link = book.volumeInfo.infoLink;
+
+                            const resultItem = `
+                                <div class="result-item">
+                                    <img src="${cover}" alt="${title}">
+                                    <h4>${title}</h4>
+                                    <p>Author: ${author}</p>
+                                    <button onclick="addToCart('${title}', '${cover}', '${link}')">Add to Cart</button>
+                                    <a href="${link}" target="_blank">View Details</a>
+                                </div>
+                            `;
+                            resultContainer.innerHTML += resultItem;
+                        });
+                    } else {
+                        resultContainer.innerHTML = `<h4>No results found for "${searchInput}".</h4>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching data from Google Books:', error);
+                    resultContainer.innerHTML = `<h4>Error fetching results. Please try again later.</h4>`;
+                });
+        }
+    </script>
+</body>
+</html>
