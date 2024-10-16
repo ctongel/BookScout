@@ -85,6 +85,12 @@
         text-decoration: solid;
     }
 
+    .directions{
+        color: white; 
+        margin: 0;
+        align-items: center;
+    }
+
     .MenuButtons {
         display: flex; /* Use flexbox layout */
         flex-direction: column; /* Arrange items in a column */
