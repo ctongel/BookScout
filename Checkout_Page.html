@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookScout - Checkout</title>
+    <link rel="stylesheet" href="BookScout.css">
+    <style>
+        .titleborder_cart{
+            text-align: center;
+            padding-top: 80px;
+            border: solid rgb(213, 153, 153) 2px;
+        }
+    </style>
+
+</head>
+<body>
+    <nav>
+        <a href="BookScout_Home.html">Home</a> 
+        <a href="ShoppingCart.html">Shopping Cart</a> 
+        <a href="index.html">Logout</a>
+    </nav>
+    <div class="titleborder_cart">
+        <h1 class="Hometitle">BookScout</h1>
+    </div>
+
+    <div class="checkout-container">
+        <h3 style="font-size:40px; text-align:center;">Checkout</h3>
+
+        <div id="checkoutItems"></div>
+        <div id="totalPrice" class="total"></div>
+
+        <h3 style="margin-top: 40px; text-align:center;">Payment Information</h3>
+
+        <div class="form-group">
+            <label for="cardName">Name on Card</label>
+            <input type="text" id="cardName" placeholder="John Doe">
+        </div>
+        <div class="form-group">
+            <label for="cardNumber">Card Number</label>
+            <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456">
+        </div>
+        <div class="form-group">
+            <label for="expDate">Expiration Date</label>
+            <input type="text" id="expDate" placeholder="MM/YY">
+        </div>
+        <div class="form-group">
+            <label for="cvv">CVV</label>
+            <input type="text" id="cvv" placeholder="123">
+        </div>
+
+        <button class="submit-button">Submit Payment</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const checkoutItemsContainer = document.getElementById('checkoutItems');
+            const totalPriceElement = document.getElementById('totalPrice');
+            const cart = JSON.parse(localStorage.getItem('cart')) || []; // Retrieve cart from localStorage
+
+            let total = 0;
+
+            if (cart.length > 0) {
+                cart.forEach((item) => {
+                    const price = parseFloat(item.price || 0); // Default price to 0 if not available
+                    total += price;
+
+                    const cartItem = `
+                        <div class="cart-item">
+                            <span>${item.title}</span>
+                            <span>$${price.toFixed(2)}</span>
+                        </div>
+                    `;
+                    checkoutItemsContainer.innerHTML += cartItem;
+                });
+
+                // Display total price
+                totalPriceElement.innerHTML = `Total: $${total.toFixed(2)}`;
+            } else {
+                checkoutItemsContainer.innerHTML = `<h4 style='text-align:center;'>Your cart is empty.</h4>`;
+                totalPriceElement.innerHTML = ''; // No total to show if cart is empty
+            }
+        });
+    </script>
+</body>
+</html>

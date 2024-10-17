@@ -12,41 +12,58 @@
         <h1 class="Hometitle">BookScout</h1>
     </div>
     <nav>
-        <a href="BookScout_Home.html">Home</a> 
-        <a href="ShoppingCart.html">Shopping Cart</a> 
+        <a href="BookScout_Home.html">Home</a>
+        <a href="ShoppingCart.html">Shopping Cart</a>
         <a href="index.html">Logout</a>
     </nav>
-    <h1>Your Shopping Cart</h1>
+    <h1 style="color:white;">Your Shopping Cart</h1>
+    <a href="Checkout_Page.html" class="checkout">Checkout</a>
+
     <div id="cartItems"></div>
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                const cartContainer = document.getElementById('cartItems');
-                const cart = JSON.parse(localStorage.getItem('cart')) || []; // Retrieve from localStorage
-    
-                if (cart.length > 0) {
-                    cart.forEach((item, index) => {
-                        const cartItem = `
-                            <div class="cart-item">
-                                <img src="${item.cover}" alt="${item.title}">
+    <div id="totalPrice" class="total"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cartContainer = document.getElementById('cartItems');
+            const totalPriceElement = document.getElementById('totalPrice');
+            const cart = JSON.parse(localStorage.getItem('cart')) || []; // Retrieve from localStorage
+
+            let total = 0;
+
+            if (cart.length > 0) {
+                cart.forEach((item, index) => {
+                    // Assuming the item object has a 'price' property
+                    const price = parseFloat(item.price || 0); // Default price is 0 if not found
+                    total += price;
+
+                    const cartItem = `
+                        <div class="cart-item">
+                            <img src="${item.cover}" alt="${item.title}">
+                            <div class="cart-item-details">
                                 <h4>${item.title}</h4>
+                                <p>Price: $${price.toFixed(2)}</p>
                                 <a href="${item.link}" target="_blank">View Details</a>
-                                <button onclick="removeFromCart(${index})">Remove</button> <!-- Remove button -->
+                                <button onclick="removeFromCart(${index})">Remove</button>
                             </div>
-                        `;
-                        cartContainer.innerHTML += cartItem;
-                    });
-                } else {
-                    cartContainer.innerHTML = `<h4>Your cart is empty.</h4>`;
-                }
-            });
-    
-            function removeFromCart(index) {
-                const cart = JSON.parse(localStorage.getItem('cart')) || [];
-                cart.splice(index, 1); // Remove item at the specified index
-                localStorage.setItem('cart', JSON.stringify(cart)); // Update localStorage
-                location.reload(); // Reload the page to update the displayed cart items
+                        </div>
+                    `;
+                    cartContainer.innerHTML += cartItem;
+                });
+
+                // Display total price
+                totalPriceElement.innerHTML = `Total: $${total.toFixed(2)}`;
+            } else {
+                cartContainer.innerHTML = `<h4 style='color:white;'>Your cart is empty.</h4>`;
+                totalPriceElement.innerHTML = ''; // No total to show
             }
-        </script>
-    </body>
-    </html>
-    
+        });
+
+        function removeFromCart(index) {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart.splice(index, 1); 
+            localStorage.setItem('cart', JSON.stringify(cart)); // Update localStorage
+            location.reload(); // Reload the page to update the displayed cart items
+        }
+    </script>
+</body>
+</html>
