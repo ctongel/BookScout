@@ -1,4 +1,24 @@
 
+.cart-icon {
+    width: 48px; 
+    height: 48px; 
+    vertical-align: middle; 
+}
+
+.cart-badge {
+    position: absolute;
+    top: -5px; 
+    right: -10px; 
+    background-color:#601914; 
+    color: white; 
+    border-radius: 50%; 
+    padding: 2px 5px; 
+    font-size: 12px; 
+}
+
+
+
+
     body {
         font-family: Arial, sans-serif;
         margin: 0;
@@ -241,3 +261,136 @@ button {
 .submit-button:hover{
     background-color: #2f0707;
     }
+
+
+                                         /* ForgotPassword CSS */
+    .forgotpassword {
+        text-align: center; 
+    }
+    
+    .forgotpassword a {
+        color: white;
+
+    }
+    
+    .forgotpassword a:visited {
+        color: white;
+    }
+    
+                                       /* ForgotPassword CSS */
+    .SSC {
+        text-align: center; 
+        text-decoration: underline;
+        background-color: #300505;
+    }
+    
+    .SSC a {
+        color: white;
+
+    }
+    
+    .SSC a:visited {
+        color: white;
+    }
+    
+    .email {
+        color:white;
+        text-align: center;
+    }
+
+                            /* New USER  */
+
+
+
+.account-options {
+    display: flex;
+    justify-content: space-between;
+    color: white;
+    padding: 20px;
+}
+
+
+.left-section, .right-section {
+    width: 45%;
+    text-align: center;
+}
+
+
+.submit-button {
+    margin-top: 10px;
+    padding: 8px 16px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.SSC a {
+    color: white;
+    text-decoration: none;
+}
+
+
+.login-form-container {
+    width: 300px;
+    margin: 0 auto;
+    text-align: center;
+    color: white;
+}
+
+.login-form-container h2 {
+    margin-bottom: 20px;
+}
+
+
+.google-login {
+    background-color:#300505;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+form label {
+    margin: 10px 0 5px;
+    text-align: left;
+}
+
+form input {
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+
+.create-account-button {
+    background-color: #300505;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+
+.popup {
+    display: none; 
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color:#450a0a;
+    color: white;
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 18px;
+    z-index: 1000; 
+}

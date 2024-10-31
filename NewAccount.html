@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <link rel="stylesheet" href="BookScout.css">
+</head>
+<body>
+    <script>
+        function showSuccessPopup(event) {
+        event.preventDefault(); // Prevents normal form submission
+
+        // Display the success popup
+        const popup = document.getElementById("successPopup");
+        popup.style.display = "block";
+    }
+
+    function redirectToLogin() {
+        // Hide the popup
+        const popup = document.getElementById("successPopup");
+        popup.style.display = "none";
+
+        // Redirect to the login page
+        window.location.href = "index.html";
+}
+
+    </script>
+    <nav>
+        <a href="index.html">Back to Login</a>
+    </nav>
+
+    <div class="titleborder">
+        <h1 class="Hometitle">BookScout</h1>
+    </div>
+
+    <div class="login-form-container">
+        <h2>Create an Account or Log in</h2>
+
+        <button class="google-login">Continue with Google</button>
+
+        <p>Or create a new account:</p>
+
+        <!-- New User Form -->
+        <form onsubmit="showSuccessPopup(event)">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+
+            <button type="submit" class="create-account-button">Create Account</button>
+        </form>
+    </div>
+
+    <div id="successPopup" class="popup">
+        <p>Account created successfully!</p>
+        <button onclick="redirectToLogin()">OK</button>
+    </div>

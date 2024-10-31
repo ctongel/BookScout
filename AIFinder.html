@@ -7,19 +7,20 @@
     <link rel="stylesheet" href="BookScout.css">
     <style>
         .titleborder {
-            text-align: center; /* Center the title */
-            margin-bottom: 20px; /* Add space below the title */
+            text-align: center; 
+            margin-bottom: 20px; 
+            margin-top: 220px;
         }
         .chat-container {
             display: flex;
             flex-direction: column;
             align-items: center;
             margin: 20px auto;
-            max-width: 600px; /* Set a maximum width for the chat box */
+            max-width: 600px; 
         }
         .chat-box {
             width: 100%;
-            height: 400px; /* Set a fixed height for the chat box */
+            height: 400px; 
             border: 1px solid #ccc;
             overflow-y: auto; /* Enable vertical scrolling */
             padding: 10px;
@@ -51,17 +52,24 @@
     </style>
 </head>
 <body>
+
     <nav>
         <a href="BookScout_Home.html">Home</a> 
-        <a href="ShoppingCart.html">Shopping Cart</a> 
+        <a href="ShoppingCart.html">
+            <img src="shoppingcart.png" alt="Cart" class="cart-icon">
+            <span id="cartCount" class="cart-badge">0</span>
+        </a> 
         <a href="index.html">Logout</a>
     </nav>
+    
+    
     <div class="titleborder">
         <h1 class="Hometitle">BookScout</h1>
     </div>
+    <div>
         <h3 style="color:white;"> Enter in your textbook name or ask the AI to find the cheapest option</h3>
-
-
+        <h4 style="color:white">To start enter in your textbook name or ask the chatbot to find the cheapest option</h4>
+    </div>
     <div class="chat-container">
         <div class="chat-box" id="chatBox"></div>
         <div class="user-input">
@@ -134,7 +142,6 @@
                     const author = cheapestBook.volumeInfo.authors ? cheapestBook.volumeInfo.authors.join(', ') : 'Unknown Author';
                     const cover = cheapestBook.volumeInfo.imageLinks ? cheapestBook.volumeInfo.imageLinks.thumbnail : 'https://via.placeholder.com/150';
                     const link = cheapestBook.volumeInfo.infoLink;
-
                     const responseMessage = `
                         <div class="message bot-message">
                             The cheapest option for "${bookName}" is "${title}" by ${author}. 

@@ -12,12 +12,14 @@
         <h1 class="Hometitle">BookScout</h1>
     </div>
     <nav>
-        <a href="BookScout_Home.html">Home</a>
-        <a href="ShoppingCart.html">Shopping Cart</a>
+        <a href="BookScout_Home.html">Home</a> 
+        <a href="ShoppingCart.html">
+            <img src="shoppingcart.png" alt="Cart" class="cart-icon">
+            <span id="cartCount" class="cart-badge">0</span>
+        </a> 
         <a href="index.html">Logout</a>
     </nav>
     <h1 style="color:white;">Your Shopping Cart</h1>
-    <a href="Checkout_Page.html" class="checkout">Checkout</a>
 
     <div id="cartItems"></div>
     <div id="totalPrice" class="total"></div>
@@ -27,18 +29,18 @@
             const cartContainer = document.getElementById('cartItems');
             const totalPriceElement = document.getElementById('totalPrice');
             const cart = JSON.parse(localStorage.getItem('cart')) || []; // Retrieve from localStorage
-
+    
             let total = 0;
-
+    
             if (cart.length > 0) {
                 cart.forEach((item, index) => {
-                    // Assuming the item object has a 'price' property
-                    const price = parseFloat(item.price || 0); // Default price is 0 if not found
+                    // Assuming the item object has 'price' and 'cover' properties
+                    const price = parseFloat(item.price) || 0; // Default price is 0 if not found
                     total += price;
-
+    
                     const cartItem = `
                         <div class="cart-item">
-                            <img src="${item.cover}" alt="${item.title}">
+                            <img src="${item.cover || 'https://via.placeholder.com/150'}" alt="${item.title}" class="cart-item-image">
                             <div class="cart-item-details">
                                 <h4>${item.title}</h4>
                                 <p>Price: $${price.toFixed(2)}</p>
@@ -49,7 +51,7 @@
                     `;
                     cartContainer.innerHTML += cartItem;
                 });
-
+    
                 // Display total price
                 totalPriceElement.innerHTML = `Total: $${total.toFixed(2)}`;
             } else {
@@ -57,7 +59,7 @@
                 totalPriceElement.innerHTML = ''; // No total to show
             }
         });
-
+    
         function removeFromCart(index) {
             const cart = JSON.parse(localStorage.getItem('cart')) || [];
             cart.splice(index, 1); 
@@ -65,5 +67,8 @@
             location.reload(); // Reload the page to update the displayed cart items
         }
     </script>
+    
+<br>
+<a href="Checkout_Page.html" class="checkout">Checkout</a>
 </body>
 </html>
